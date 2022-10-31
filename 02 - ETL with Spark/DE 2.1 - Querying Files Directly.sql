@@ -191,7 +191,7 @@ SELECT * FROM cte_json
 
 -- COMMAND ----------
 
--- SELECT COUNT(*) FROM cte_json
+SELECT COUNT(*) FROM cte_json
 
 -- COMMAND ----------
 

@@ -135,6 +135,15 @@ display(example_df)
 # COMMAND ----------
 
 # MAGIC %md
+# MAGIC # A Header
+# MAGIC 
+# MAGIC * A bullet point item
+# MAGIC 
+# MAGIC A useful link to [google](http://www.google.com)
+
+# COMMAND ----------
+
+# MAGIC %md
 # MAGIC 
 # MAGIC ## Run a SQL cell
 # MAGIC 

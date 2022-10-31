@@ -19,7 +19,7 @@ DA.conclude_setup()
 # COMMAND ----------
 
 # TODO
-my_name = None
+my_name = 'Not None!'
 
 # COMMAND ----------
 

@@ -112,8 +112,8 @@ DESCRIBE HISTORY sales
 
 -- COMMAND ----------
 
--- INSERT OVERWRITE sales
--- SELECT *, current_timestamp() FROM parquet.`${da.paths.datasets}/ecommerce/raw/sales-historical`
+INSERT OVERWRITE sales
+SELECT *, current_timestamp() FROM parquet.`${da.paths.datasets}/ecommerce/raw/sales-historical`
 
 -- COMMAND ----------
 
@@ -241,6 +241,10 @@ WHEN NOT MATCHED AND b.traffic_source = 'email' THEN
 COPY INTO sales
 FROM "${da.paths.datasets}/ecommerce/raw/sales-30m"
 FILEFORMAT = PARQUET
+
+-- COMMAND ----------
+
+DESCRIBE HISTORY sales
 
 -- COMMAND ----------
 

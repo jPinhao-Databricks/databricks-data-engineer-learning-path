@@ -164,7 +164,10 @@ USE ${da.schema_name}_custom_location;
 
 CREATE OR REPLACE TABLE managed_table_in_db_with_custom_location (width INT, length INT, height INT);
 INSERT INTO managed_table_in_db_with_custom_location VALUES (3, 2, 1);
-SELECT * FROM managed_table_in_db_with_custom_location;
+-- SELECT * FROM managed_table_in_db_with_custom_location;
+
+CREATE OR REPLACE TABLE another_managed_table_test (width INT, length INT, height INT);
+INSERT INTO another_managed_table_test VALUES (3, 2, 1);
 
 -- COMMAND ----------
 
@@ -193,6 +196,11 @@ DESCRIBE DETAIL managed_table_in_db_with_custom_location;
 -- MAGIC 
 -- MAGIC files = dbutils.fs.ls(tbl_location)
 -- MAGIC display(files)
+-- MAGIC 
+-- MAGIC schema_location = tbl_location.split(f"/{table_name}")[0]
+-- MAGIC print(schema_location)
+-- MAGIC files = dbutils.fs.ls(schema_location)
+-- MAGIC display(files)
 
 -- COMMAND ----------
 
@@ -204,6 +212,7 @@ DESCRIBE DETAIL managed_table_in_db_with_custom_location;
 -- COMMAND ----------
 
 DROP TABLE managed_table_in_db_with_custom_location;
+DROP TABLE another_managed_table_test;
 
 -- COMMAND ----------
 

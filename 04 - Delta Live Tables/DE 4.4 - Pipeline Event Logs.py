@@ -92,6 +92,63 @@ spark.conf.set('latest_update.id', latest_update_id)
 
 # COMMAND ----------
 
+# MAGIC %sql
+# MAGIC WITH l1_raw AS (
+# MAGIC   SELECT 
+# MAGIC     details:flow_definition.output_dataset,
+# MAGIC     details:flow_definition.input_datasets
+# MAGIC   FROM event_log_raw 
+# MAGIC   WHERE event_type = 'flow_definition' AND 
+# MAGIC         origin.update_id = '${latest_update.id}'
+# MAGIC ),
+# MAGIC l1_arr AS (
+# MAGIC   SELECT
+# MAGIC     output_dataset,
+# MAGIC     regexp_extract_all(input_datasets, "(\")([^\"]+)(\")", 2) AS input_datasets
+# MAGIC   FROM l1_raw
+# MAGIC ),
+# MAGIC l1 AS (
+# MAGIC   SELECT
+# MAGIC     l1_arr.output_dataset,
+# MAGIC     1 AS input_depth,
+# MAGIC     explode(l1_arr.input_datasets) AS input_dataset
+# MAGIC   FROM l1_arr
+# MAGIC ),
+# MAGIC l2 AS (
+# MAGIC   SELECT
+# MAGIC     l1.output_dataset,
+# MAGIC     2 AS input_depth,
+# MAGIC     l2.input_dataset
+# MAGIC   FROM l1
+# MAGIC   LEFT JOIN l1 AS l2
+# MAGIC     ON l1.input_dataset = l2.output_dataset
+# MAGIC   WHERE l2.input_dataset IS NOT NULL
+# MAGIC ),
+# MAGIC l3 AS (
+# MAGIC   SELECT
+# MAGIC     l2.output_dataset,
+# MAGIC     3 AS input_depth,
+# MAGIC     l3.input_dataset
+# MAGIC   FROM l2
+# MAGIC   LEFT JOIN l1 AS l3
+# MAGIC     ON l2.input_dataset = l3.output_dataset
+# MAGIC   WHERE l3.input_dataset IS NOT NULL
+# MAGIC )
+# MAGIC 
+# MAGIC SELECT
+# MAGIC   *
+# MAGIC FROM (
+# MAGIC   SELECT * FROM l1
+# MAGIC   UNION ALL
+# MAGIC   SELECT * FROM l2
+# MAGIC   UNION ALL
+# MAGIC   SELECT * FROM l3
+# MAGIC )
+# MAGIC PIVOT 
+# MAGIC   (COLLECT_SET(input_dataset) FOR input_depth IN (1 AS L1,2 AS L2,3 AS L3))
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC ## Examine Data Quality Metrics
 # MAGIC 
